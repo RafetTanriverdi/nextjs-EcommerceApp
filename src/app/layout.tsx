@@ -1,10 +1,8 @@
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "../components/RTHeader/Header";
 
 const inter = Inter({ subsets: ["latin"] });
-
 
 export default function RootLayout({
   children,
@@ -12,11 +10,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Header />
-        {children}
-      </body>
-    </html>
+    <>
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any"></link>
+      </head>
+      <html lang="en">
+        <body className={inter.className}>
+          <Header />
+          {children}
+        </body>
+      </html>
+    </>
   );
 }
