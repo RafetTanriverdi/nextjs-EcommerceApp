@@ -12,7 +12,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@rt/components/ui/dropdown-menu";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "aws-amplify/auth";
+import { Amplify } from "aws-amplify";
+import awsmobile from "../../aws-exports";
+import { cookies } from "next/headers";
+import Cookies from "js-cookie";
+
+Amplify.configure(awsmobile);
 
 const routes = [
   {
@@ -43,7 +50,18 @@ const routes = [
 
 export const Header = () => {
   const pathname = usePathname();
-  console.log(pathname);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      Cookies.remove("accessToken");
+      router.push("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <>
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -127,7 +145,7 @@ export const Header = () => {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

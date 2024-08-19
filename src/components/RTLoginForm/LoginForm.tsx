@@ -11,19 +11,21 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { signIn } from "aws-amplify/auth";
+import { fetchAuthSession, signIn } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
 import awsmobile from "../../aws-exports";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
-Amplify.configure(awsmobile)
-
+Amplify.configure(awsmobile);
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleSignInClick = () => {
-    handleSignIn({ password, email });
+    handleSignIn({ password, email, router });
   };
 
   return (
@@ -69,18 +71,33 @@ const LoginForm = () => {
 type SignUpParameters = {
   password: string;
   email: string;
+  router: any;
 };
-
-async function handleSignIn({ password, email }: SignUpParameters) {
+async function handleSignIn({ password, email, router }: SignUpParameters) {
   try {
     const { isSignedIn, nextStep } = await signIn({
       username: email,
       password,
     });
 
+    const { accessToken } = (await fetchAuthSession()).tokens ?? {};
+
+    if (accessToken) {
+      const access = accessToken.toString();
+
+      Cookies.set("accessToken", access, {
+        expires: 1,
+        path: "/",
+        secure: true,
+        sameSite: "strict",
+      });
+    } else {
+      console.error("Access token is undefined");
+    }
+    router.push("/profile");
     console.log(isSignedIn, nextStep);
   } catch (error) {
-    console.log("error signing up:", error);
+    console.log("error signing in:", error);
   }
 }
 

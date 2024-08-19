@@ -1,22 +1,31 @@
-import { getCurrentUser } from "aws-amplify/auth";
-import { GetServerSidePropsContext } from "next";
+// auth.ts
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { getCurrentUser } from 'aws-amplify/auth';
 
-export const withAuth = async (context: GetServerSidePropsContext) => {
+interface AuthenticatedProps {
+  user: {
+    username: string;
+    [key: string]: any;
+  };
+}
+
+export async function checkUserAuthentication(
+  context: GetServerSidePropsContext,
+  redirectUrl: string = '/login'
+): Promise<GetServerSidePropsResult<AuthenticatedProps>> {
   try {
     const user = await getCurrentUser();
     return {
       props: {
-        user: {
-          username: user.username,
-        },
+        user,
       },
     };
   } catch (error) {
     return {
       redirect: {
-        destination: "/login",
+        destination: redirectUrl,
         permanent: false,
       },
     };
   }
-};
+}
