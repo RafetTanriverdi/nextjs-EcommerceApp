@@ -11,8 +11,8 @@ interface ProfileProps {
   };
 }
 
-const Profile: React.FC<ProfileProps> = ({ user }) => {
+const profile = ({ user }: ProfileProps) => {
   return <div>Profile {user ? user.username : "No user logged in"}</div>;
 };
 
-export default Profile;
+export default profile;
