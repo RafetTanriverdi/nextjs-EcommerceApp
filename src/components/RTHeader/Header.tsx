@@ -57,6 +57,7 @@ export const Header = () => {
       await signOut();
       Cookies.remove("accessToken");
       router.push("/login");
+      router.refresh();
     } catch (error) {
       console.error("Error signing out:", error);
     }
