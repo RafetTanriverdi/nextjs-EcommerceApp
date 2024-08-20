@@ -3,7 +3,7 @@ import awsmobile from "../../aws-exports";
 import { checkUserAuthentication } from "../../utils/AuthUtils";
 import { GetServerSideProps } from "next";
 
-Amplify.configure(awsmobile);
+Amplify.configure(awsmobile, { ssr: true });
 
 interface ProfileProps {
   user: {
@@ -14,6 +14,5 @@ interface ProfileProps {
 const Profile: React.FC<ProfileProps> = ({ user }) => {
   return <div>Profile {user ? user.username : "No user logged in"}</div>;
 };
-
 
 export default Profile;

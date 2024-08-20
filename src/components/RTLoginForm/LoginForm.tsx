@@ -17,7 +17,7 @@ import awsmobile from "../../aws-exports";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
-Amplify.configure(awsmobile);
+Amplify.configure(awsmobile,{ssr:true});
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");

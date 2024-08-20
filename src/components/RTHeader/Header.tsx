@@ -19,7 +19,7 @@ import awsmobile from "../../aws-exports";
 import { cookies } from "next/headers";
 import Cookies from "js-cookie";
 
-Amplify.configure(awsmobile);
+Amplify.configure(awsmobile,{ssr:true});
 
 const routes = [
   {
@@ -139,10 +139,10 @@ export const Header = () => {
                 <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuContent align="end" >
+              <DropdownMenuItem onClick={()=>router.push('/profile')}> My Account</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem onClick={()=>router.push('/settings')}>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>

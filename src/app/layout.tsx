@@ -1,8 +1,12 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "../components/RTHeader/Header";
+import awsmobile from "../aws-exports";
+import { Amplify } from "aws-amplify";
 
 const inter = Inter({ subsets: ["latin"] });
+
+Amplify.configure(awsmobile, { ssr: true });
 
 export default function RootLayout({
   children,
