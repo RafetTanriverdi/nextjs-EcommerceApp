@@ -96,6 +96,7 @@ async function handleSignIn({ password, email, router }: SignUpParameters) {
     }
     router.push("/profile");
     console.log(isSignedIn, nextStep);
+    router.refresh();
   } catch (error) {
     console.log("error signing in:", error);
   }

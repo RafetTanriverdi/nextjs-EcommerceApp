@@ -11,7 +11,7 @@ import { Button } from "@rt/components/ui/button";
 import Image from "next/image";
 
 interface Product {
-  id: string;
+  productId: string;
   name: string;
   price: number;
   imageUrl: string;
@@ -24,8 +24,8 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   const handleAddToCart = useCallback(() => {
-    onAddToCart(product.id);
-  }, [onAddToCart, product.id]);
+    onAddToCart(product.productId);
+  }, [onAddToCart, product.productId]);
 
   return (
     <Card className="max-w-xs rounded-lg shadow-md hover:shadow-lg transition-shadow">
