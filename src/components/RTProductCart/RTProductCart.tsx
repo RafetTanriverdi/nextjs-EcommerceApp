@@ -12,20 +12,24 @@ import Image from "next/image";
 
 interface Product {
   productId: string;
-  name: string;
-  price: number;
   imageUrl: string;
+  createdAt: string;
+  stock: number;
+  description: string;
+  price: number;
+  stripePriceId: string;
+  productName: string;  // `productName` kullanılıyor.
 }
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart: (productId: string) => void;
+  onAddToCart: (product: Product) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   const handleAddToCart = useCallback(() => {
-    onAddToCart(product.productId);
-  }, [onAddToCart, product.productId]);
+    onAddToCart(product);
+  }, [onAddToCart, product]);
 
   return (
     <Card className="max-w-xs rounded-lg shadow-md hover:shadow-lg transition-shadow">
@@ -33,14 +37,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         <div className="relative w-full h-48">
           <Image
             src={product.imageUrl}
-            alt={product.name}
+            alt={product.productName}  // `productName` kullanılıyor.
             fill
             className="rounded-t-lg object-cover"
           />
         </div>
       </CardHeader>
       <CardContent>
-        <h2 className="text-xl font-semibold">{product.name}</h2>
+        <h2 className="text-xl font-semibold">{product.productName}</h2>  {/* `productName` kullanılıyor. */}
         <p className="text-gray-600 mt-2">${product.price.toFixed(2)}</p>
       </CardContent>
       <CardFooter>

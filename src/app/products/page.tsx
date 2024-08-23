@@ -10,9 +10,13 @@ import ProductCard from "../../components/RTProductCart/RTProductCart";
 
 type Product = {
   productId: string;
-  name: string;
-  price: number;
   imageUrl: string;
+  createdAt: string;
+  stock: number;
+  description: string;
+  price: number;
+  stripePriceId: string;
+  productName: string;  // `productName` kullanılıyor.
 };
 
 Amplify.configure(awsmobile, { ssr: true });
@@ -21,9 +25,7 @@ export default function Product() {
   const router = useRouter();
   const { data, isLoading, error } = useQuery({
     queryKey: ["productsList"],
-    queryFn: () => {
-      return axiosInstance.get("/products");
-    },
+    queryFn: () => axiosInstance.get("/products"),
   });
 
   if (isLoading) {
@@ -42,19 +44,11 @@ export default function Product() {
         <ProductCard
           key={product.productId}
           product={product}
-          onAddToCart={(productId) => router.push(`products/${productId}`)}
+          onAddToCart={(product) =>
+            router.push(`products/${product.productId}`,)
+          }
         />
       ))}
-      <ProductCard
-        product={{
-          productId: "1",
-          name: "Product 1",
-          price: 100,
-          imageUrl:
-            "https://www.kaft.com/static/images/cache/1200/canta_nordhugsulphur_17061_1200_1200.jpg?cacheID=1675926790000",
-        }}
-        onAddToCart={(productId) => router.push(`products/${productId}`)}
-      />
     </div>
   );
 }
