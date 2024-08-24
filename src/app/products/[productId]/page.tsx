@@ -1,26 +1,30 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "../../../components/ui/button";
-import { axiosInstance } from "../../../utils/network/httpRequester";
+import { axiosInstance } from "../../../network/httpRequester";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setClientSecret } from "../../../data/redux/clientSecretSlice";
+import { ENDPOINT } from "../../../network/EndPoint";
 
 const Page = ({ params }: { params: { productId: string } }) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const { data } = useQuery({
+  const { data, error } = useQuery({
     queryKey: ["productGet", params.productId],
-    queryFn: () => axiosInstance.get(`/products/${params.productId}`),
+    queryFn: () =>
+      axiosInstance.get(
+        ENDPOINT.getProduct.replace(":productId", params.productId)
+      ),
   });
 
   const postbody = {
-    priceId: "price_1PnPGiJ3JvdP9Vt6O6ezUttJ",
+    priceId: data?.data.stripePriceId,
     return_url: "http://localhost:3000/cancel",
-    quantity: 1,
+    quantity: 3,
   };
 
   const mutation = useMutation({

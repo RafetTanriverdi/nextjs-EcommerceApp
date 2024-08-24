@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Amplify } from "aws-amplify";
 import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../../utils/network/httpRequester";
+import { axiosInstance } from "../../network/httpRequester";
 import awsmobile from "../../aws-exports";
 import { RTSkeleton } from "../../components/RTSkeleton/RTSkeleton";
 import ProductCard from "../../components/RTProductCart/RTProductCart";
@@ -22,10 +22,13 @@ type Product = {
 Amplify.configure(awsmobile, { ssr: true });
 
 export default function Product() {
+  
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get('categoryId'); 
   const { data, isLoading, error } = useQuery({
     queryKey: ["productsList"],
-    queryFn: () => axiosInstance.get("/products"),
+    queryFn: () => axiosInstance.get(`/products?categoryId=${categoryId}`),
   });
 
   if (isLoading) {
