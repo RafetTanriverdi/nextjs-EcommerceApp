@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import React, { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Amplify } from "aws-amplify";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../network/httpRequester";
@@ -22,19 +22,15 @@ type Product = {
 
 Amplify.configure(awsmobile, { ssr: true });
 
-const ProductList = () => {
-  const searchParams = useSearchParams();
-  const categoryId = searchParams.get("categoryId");
-  const categoryParams = categoryId ? `?categoryId=${categoryId}` : "";
+const ProductList = ({ categoryParams }: { categoryParams: string }) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["productsList", categoryId],
+    queryKey: ["productsList", categoryParams],
     queryFn: () => axiosInstance.get(`/products${categoryParams}`),
-    enabled: !!categoryId,
   });
 
   if (isLoading) {
     return (
-      <div className="flex flex-wrap justify-center ">
+      <div className="flex flex-wrap justify-center">
         {Array.from({ length: 8 }).map((_, index) => (
           <div key={index} className="w-11/12 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/4 p-4">
             <RTSkeleton />
@@ -49,12 +45,9 @@ const ProductList = () => {
   }
 
   return (
-    <div className="flex flex-wrap justify-center ">
+    <div className="flex flex-wrap justify-center">
       {data?.data?.map((product: Product) => (
-        <div
-          key={product.productId}
-          className="w-11/12 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/4 p-4 "
-        >
+        <div key={product.productId} className="w-11/12 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/4 p-4">
           <ProductCard product={product} />
         </div>
       ))}
@@ -63,9 +56,13 @@ const ProductList = () => {
 };
 
 export default function Product() {
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("categoryId");
+  const categoryParams = categoryId ? `?categoryId=${categoryId}` : "";
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ProductList />
+      <ProductList categoryParams={categoryParams} />
     </Suspense>
   );
 }
