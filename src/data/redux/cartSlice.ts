@@ -12,8 +12,19 @@ interface CartState {
   items: CartItem[];
 }
 
+const loadInitialState = (): CartItem[] => {
+  if (typeof window !== 'undefined') {
+    // Tarayıcıda olduğumuzdan emin olduktan sonra sessionStorage'a erişiyoruz
+    const storedItems = sessionStorage.getItem('cartItems');
+    if (storedItems) {
+      return JSON.parse(storedItems);
+    }
+  }
+  return [];
+};
+
 const initialState: CartState = {
-  items: JSON.parse(sessionStorage.getItem('cartItems') || '[]'),
+  items: loadInitialState(),
 };
 
 const cartSlice = createSlice({
@@ -29,15 +40,21 @@ const cartSlice = createSlice({
       } else {
         state.items.push({ ...action.payload, quantity: 1 });
       }
-      sessionStorage.setItem('cartItems', JSON.stringify(state.items));
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('cartItems', JSON.stringify(state.items));
+      }
     },
     removeFromCart: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter(item => item.productId !== action.payload);
-      sessionStorage.setItem('cartItems', JSON.stringify(state.items));
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('cartItems', JSON.stringify(state.items));
+      }
     },
     clearCart: (state) => {
       state.items = [];
-      sessionStorage.removeItem('cartItems');
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('cartItems');
+      }
     },
   },
 });
