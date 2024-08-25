@@ -1,14 +1,13 @@
 "use client";
 import Link from "next/link";
-import { CircleUser, Menu, Package2, Search } from "lucide-react";
+import { CircleUser, Menu, Package2, ShoppingCart } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@rt/components/ui/sheet";
 import { Button } from "@rt/components/ui/button";
-import { Input } from "@rt/components/ui/input";
+import { Badge } from "@rt/components/ui/badge"; // Badge (rozet) bileşenini ekleyin
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@rt/components/ui/dropdown-menu";
@@ -16,31 +15,25 @@ import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
 import awsmobile from "../../aws-exports";
-import { cookies } from "next/headers";
 import Cookies from "js-cookie";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../app/store";
 
-Amplify.configure(awsmobile,{ssr:true});
+Amplify.configure(awsmobile, { ssr: true });
 
 const routes = [
   {
     name: "Home",
-    href: "/",
-  },
-  {
-    name: "Dashboard",
-    href: "/dashboard",
+    href: "/products",
   },
   {
     name: "Orders",
     href: "/orders",
   },
   {
-    name: "Products",
-    href: "/products",
-  },
-  {
-    name: "Customers",
-    href: "/customers",
+    name: "Categories",
+    href: "/categories",
   },
   {
     name: "Settings",
@@ -51,6 +44,8 @@ const routes = [
 export const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
+
+  const cartItems = useSelector((state: RootState) => state.cart.items);
 
   const handleLogout = async () => {
     try {
@@ -65,7 +60,7 @@ export const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+      <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
             href="#"
@@ -122,17 +117,48 @@ export const Header = () => {
             </nav>
           </SheetContent>
         </Sheet>
-        <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-          <form className="ml-auto flex-1 sm:flex-initial">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search products..."
-                className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
-              />
-            </div>
-          </form>
+
+        <div className="flex items-center gap-4 ml-auto">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" className="relative">
+                <ShoppingCart className="h-5 w-5" />
+                {cartItems.length > 0 && (
+                  <Badge
+                    variant="outline"
+                    className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs px-2 py-1 rounded-full"
+                  >
+                    {cartItems.length}
+                  </Badge>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64 p-2">
+              <div className="p-2">
+                <h4 className="font-bold">Sepet Özeti</h4>
+                {cartItems.length > 0 ? (
+                  <>
+                    {cartItems?.map((item) => (
+                      <div key={item.productId} className="flex justify-between">
+                        <span>{item.productName}</span>
+                        <span>${item?.price.toFixed(2)}</span>
+                      </div>
+                    ))}
+                    <Button
+                      variant="default"
+                      className="w-full mt-2"
+                      onClick={() => router.push("/cart")}
+                    >
+                      Sepete Git
+                    </Button>
+                  </>
+                ) : (
+                  <p>Sepetiniz boş</p>
+                )}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
@@ -140,10 +166,14 @@ export const Header = () => {
                 <span className="sr-only">Toggle user menu</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" >
-              <DropdownMenuItem onClick={()=>router.push('/profile')}> My Account</DropdownMenuItem>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => router.push("/profile")}>
+                My Account
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={()=>router.push('/settings')}>Settings</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push("/settings")}>
+                Settings
+              </DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
