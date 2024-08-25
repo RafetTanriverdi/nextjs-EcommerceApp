@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Amplify } from "aws-amplify";
 import { useQuery } from "@tanstack/react-query";
@@ -22,20 +22,14 @@ type Product = {
 
 Amplify.configure(awsmobile, { ssr: true });
 
-export default function Product() {
-  const router = useRouter();
+const ProductList = () => {
   const searchParams = useSearchParams();
-  const [categoryId, setCategoryId] = useState<string | null>(null);
-
-  useEffect(() => {
-    setCategoryId(searchParams.get("categoryId"));
-  }, [searchParams]);
-
+  const categoryId = searchParams.get("categoryId");
   const categoryParams = categoryId ? `?categoryId=${categoryId}` : "";
   const { data, isLoading, error } = useQuery({
     queryKey: ["productsList", categoryId],
     queryFn: () => axiosInstance.get(`/products${categoryParams}`),
-    enabled: !!categoryId, // Sadece categoryId belirlendikten sonra sorguyu çalıştır
+    enabled: !!categoryId,
   });
 
   if (isLoading) {
@@ -65,5 +59,13 @@ export default function Product() {
         </div>
       ))}
     </div>
+  );
+};
+
+export default function Product() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductList />
+    </Suspense>
   );
 }
