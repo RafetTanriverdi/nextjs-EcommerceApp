@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Amplify } from "aws-amplify";
 import { useQuery } from "@tanstack/react-query";
@@ -24,15 +25,20 @@ Amplify.configure(awsmobile, { ssr: true });
 export default function Product() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const categoryId = searchParams.get("categoryId");
+  const [categoryId, setCategoryId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setCategoryId(searchParams.get("categoryId"));
+  }, [searchParams]);
+
   const categoryParams = categoryId ? `?categoryId=${categoryId}` : "";
   const { data, isLoading, error } = useQuery({
-    queryKey: ["productsList"],
+    queryKey: ["productsList", categoryId],
     queryFn: () => axiosInstance.get(`/products${categoryParams}`),
+    enabled: !!categoryId, // Sadece categoryId belirlendikten sonra sorguyu çalıştır
   });
 
   if (isLoading) {
-    // Eğer veriler yükleniyorsa skeleton göster
     return (
       <div className="flex flex-wrap justify-center ">
         {Array.from({ length: 8 }).map((_, index) => (
@@ -55,10 +61,7 @@ export default function Product() {
           key={product.productId}
           className="w-11/12 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/4 p-4 "
         >
-          <ProductCard
-            product={product}
-       
-          />
+          <ProductCard product={product} />
         </div>
       ))}
     </div>
