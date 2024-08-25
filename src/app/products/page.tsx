@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Amplify } from "aws-amplify";
 import { useQuery } from "@tanstack/react-query";
@@ -22,7 +22,11 @@ type Product = {
 
 Amplify.configure(awsmobile, { ssr: true });
 
-const ProductList = ({ categoryParams }: { categoryParams: string }) => {
+const ProductList = () => {
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("categoryId");
+  const categoryParams = categoryId ? `?categoryId=${categoryId}` : "";
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["productsList", categoryParams],
     queryFn: () => axiosInstance.get(`/products${categoryParams}`),
@@ -56,13 +60,9 @@ const ProductList = ({ categoryParams }: { categoryParams: string }) => {
 };
 
 export default function Product() {
-  const searchParams = useSearchParams();
-  const categoryId = searchParams.get("categoryId");
-  const categoryParams = categoryId ? `?categoryId=${categoryId}` : "";
-
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ProductList categoryParams={categoryParams} />
+    <Suspense >
+      <ProductList />
     </Suspense>
   );
 }
