@@ -34,8 +34,8 @@ interface PageProps {
 const Page: React.FC<PageProps> = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [selectedImage, setSelectedImage] = useState<number>(0); // Görsel geçişi için state
-  const [quantity, setQuantity] = useState<number>(1); // Miktar için state
+  const [selectedImage, setSelectedImage] = useState<number>(0); 
+  const [quantity, setQuantity] = useState<number>(1); 
 
   const { data, error } = useQuery<ApiResponse>({
     queryKey: ["productGet", params.productId],
@@ -80,7 +80,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
 
   return (
     <div className="container mx-auto p-6 flex flex-col md:flex-row gap-6">
-      {/* Sol Taraf: Ürün Görseli */}
+    
       <div className="md:w-1/2 flex flex-col items-center">
         <div className="w-full h-96 relative mb-4">
           <Image
@@ -115,7 +115,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
         </div>
       </div>
 
-      {/* Sağ Taraf: Ürün Detayları */}
+
       <div className="md:w-1/2 flex flex-col justify-between">
         <div>
           <h1 className="text-3xl font-bold">{data?.data.productName}</h1>
@@ -123,7 +123,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
           <p className="text-2xl font-semibold mt-4">${data?.data.price.toFixed(2)}</p>
         </div>
 
-        {/* Miktar Seçimi ve Butonlar */}
+
         <div className="mt-6 flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <label htmlFor="quantity" className="font-medium">
