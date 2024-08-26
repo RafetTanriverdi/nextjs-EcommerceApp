@@ -20,7 +20,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 
-Amplify.configure(awsmobile, { ssr: true });
+Amplify.configure(awsmobile);
 
 const routes = [
   {

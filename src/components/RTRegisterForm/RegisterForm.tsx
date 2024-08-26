@@ -15,7 +15,7 @@ import { signUp } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
 import awsmobile from "../../aws-exports";
 
-Amplify.configure(awsmobile, { ssr: true });
+Amplify.configure(awsmobile);
 
 const RegisterForm = () => {
   const [email, setEmail] = useState("");

@@ -17,7 +17,7 @@ import awsmobile from "../../aws-exports";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
-Amplify.configure(awsmobile,{ssr:true});
+Amplify.configure(awsmobile);
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -84,13 +84,6 @@ async function handleSignIn({ password, email, router }: SignUpParameters) {
 
     if (accessToken) {
       const access = accessToken.toString();
-
-      Cookies.set("accessToken", access, {
-        expires: 1,
-        path: "/",
-        secure: true,
-        sameSite: "strict",
-      });
     } else {
       console.error("Access token is undefined");
     }

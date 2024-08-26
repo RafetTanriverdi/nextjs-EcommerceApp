@@ -12,9 +12,7 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith(route)
   );
   const isPublicRoute = publicRoutes.includes(pathname);
-
-  const cookie = cookies();
-  const accessToken = cookie.get("accessToken");
+const accessToken= null;
 
   if (isPublicRoute && accessToken) {
     url.pathname = "/profile";

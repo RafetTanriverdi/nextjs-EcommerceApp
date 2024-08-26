@@ -20,7 +20,7 @@ type Product = {
   productName: string;
 };
 
-Amplify.configure(awsmobile, { ssr: true });
+Amplify.configure(awsmobile);
 
 const ProductList = () => {
   const searchParams = useSearchParams();
