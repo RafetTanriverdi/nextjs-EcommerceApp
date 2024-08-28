@@ -16,7 +16,7 @@ import { signOut } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
 import awsmobile from "../../aws-exports";
 import Cookies from "js-cookie";
-import { useState } from "react";
+
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 

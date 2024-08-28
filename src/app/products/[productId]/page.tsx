@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "../../../components/ui/button";
-import { axiosInstance } from "../../../network/httpRequester";
+import  axiosInstance  from "../../../network/httpRequester";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";

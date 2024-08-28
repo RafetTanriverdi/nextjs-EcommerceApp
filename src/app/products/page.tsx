@@ -4,7 +4,7 @@ import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Amplify } from "aws-amplify";
 import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "../../network/httpRequester";
+import axiosInstance  from "../../network/httpRequester";
 import awsmobile from "../../aws-exports";
 import { RTSkeleton } from "../../components/RTSkeleton/RTSkeleton";
 import ProductCard from "../../components/RTProductCart/RTProductCart";

@@ -14,8 +14,8 @@ import { Label } from "../ui/label";
 import { fetchAuthSession, signIn } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
 import awsmobile from "../../aws-exports";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 Amplify.configure(awsmobile);
 
@@ -84,6 +84,8 @@ async function handleSignIn({ password, email, router }: SignUpParameters) {
 
     if (accessToken) {
       const access = accessToken.toString();
+
+      Cookies.set("accessToken", access);
     } else {
       console.error("Access token is undefined");
     }
