@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { useQuery } from "@tanstack/react-query";
 import React, { Suspense } from "react";
 import axiosInstance from "../../../network/httpRequester";
@@ -14,7 +14,7 @@ const OrdersContianer = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
-      return axiosInstance.get(ENDPOINT.checkout);
+      return axiosInstance.get("/orders");
     },
   });
 
@@ -29,7 +29,7 @@ const OrdersContianer = () => {
       {data?.data.map((e: Orders) => (
         <div key={e.orderId}>
           <h1>{e.productName}</h1>
-          <p>{e.amountTotal}</p>
+          <p>{"$" + (e.amountTotal / 100).toFixed(2)}</p>
         </div>
       ))}
     </>

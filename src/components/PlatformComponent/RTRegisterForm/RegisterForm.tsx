@@ -7,13 +7,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+} from "../../ui/card";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
 import { signUp } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
-import awsmobile from "../../aws-exports";
+import awsmobile from "../../../aws-exports";
 
 Amplify.configure(awsmobile);
 

@@ -7,13 +7,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+} from "../../ui/card";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
 import { fetchAuthSession, signIn } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
-import awsmobile from "../../aws-exports";
+import awsmobile from "../../../aws-exports";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
@@ -85,7 +85,7 @@ async function handleSignIn({ password, email, router }: SignUpParameters) {
     if (accessToken) {
       const access = accessToken.toString();
 
-      Cookies.set("accessToken", access);
+      Cookies.set("accessToken", access, { expires: 1 });
     } else {
       console.error("Access token is undefined");
     }

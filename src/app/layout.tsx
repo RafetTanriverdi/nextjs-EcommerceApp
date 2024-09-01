@@ -1,13 +1,14 @@
 "use client";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Header } from "../components/RTHeader/Header";
+import { Header } from "../components/PlatformComponent/RTHeader/Header";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 import { Provider } from "react-redux";
 import { store } from "./store";
+import { ThemeProvider } from "../components/ThemeProvider/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,8 +27,15 @@ export default function RootLayout({
         <body className={inter.className}>
           <QueryClientProvider client={queryClient}>
             <Provider store={store}>
-              <Header />
-              {children}
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <Header />
+                {children}
+              </ThemeProvider>
             </Provider>
             <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientProvider>

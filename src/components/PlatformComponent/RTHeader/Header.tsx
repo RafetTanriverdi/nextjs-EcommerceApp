@@ -1,9 +1,17 @@
 "use client";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { CircleUser, Menu, Package2, ShoppingCart } from "lucide-react";
+import {
+  CircleUser,
+  Menu,
+  Moon,
+  Package2,
+  ShoppingCart,
+  Sun,
+} from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@rt/components/ui/sheet";
 import { Button } from "@rt/components/ui/button";
-import { Badge } from "@rt/components/ui/badge"; // Badge (rozet) bileşenini ekleyin
+import { Badge } from "@rt/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,31 +22,19 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
-import awsmobile from "../../aws-exports";
+import awsmobile from "../../../aws-exports";
 import Cookies from "js-cookie";
-
 import { useSelector } from "react-redux";
-import { RootState } from "../../app/store";
+import { RootState } from "../../../app/store";
+import { useTheme } from "next-themes";
 
 Amplify.configure(awsmobile);
 
 const routes = [
-  {
-    name: "Home",
-    href: "/products",
-  },
-  {
-    name: "Orders",
-    href: "/orders",
-  },
-  {
-    name: "Categories",
-    href: "/categories",
-  },
-  {
-    name: "Settings",
-    href: "/settings",
-  },
+  { name: "Home", href: "/products" },
+  { name: "Orders", href: "/orders" },
+  { name: "Categories", href: "/categories" },
+  { name: "Settings", href: "/settings" },
 ];
 
 export const Header = () => {
@@ -46,6 +42,12 @@ export const Header = () => {
   const router = useRouter();
 
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const [hasMounted, setHasMounted] = useState(false);
+  const { setTheme, theme } = useTheme();
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -119,11 +121,18 @@ export const Header = () => {
         </Sheet>
 
         <div className="flex items-center gap-4 ml-auto">
+          {hasMounted && theme === "dark" ? (
+            <Moon onClick={() => setTheme("light")} />
+          ) : (
+            <Sun onClick={() => setTheme("dark")} />
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" className="relative">
-                <ShoppingCart className="h-5 w-5" />
-                {cartItems.length > 0 && (
+              <div className="relative">
+                <Button variant="outline" size="icon" className="relative">
+                  <ShoppingCart className="h-5 w-5" />
+                </Button>
+                {hasMounted && cartItems.length > 0 && (
                   <Badge
                     variant="outline"
                     className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs px-2 py-1 rounded-full"
@@ -131,15 +140,19 @@ export const Header = () => {
                     {cartItems.length}
                   </Badge>
                 )}
-              </Button>
+              </div>
             </DropdownMenuTrigger>
+
             <DropdownMenuContent align="end" className="w-64 p-2">
               <div className="p-2">
                 <h4 className="font-bold">Sepet Özeti</h4>
                 {cartItems.length > 0 ? (
                   <>
                     {cartItems?.map((item) => (
-                      <div key={item.productId} className="flex justify-between">
+                      <div
+                        key={item.productId}
+                        className="flex justify-between"
+                      >
                         <span>{item.productName}</span>
                         <span>${item?.price.toFixed(2)}</span>
                       </div>

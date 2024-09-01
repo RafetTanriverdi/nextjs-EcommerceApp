@@ -10,7 +10,7 @@ import {
 import { Button } from "@rt/components/ui/button";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../data/redux/cartSlice";
+import { addToCart } from "../../../data/redux/cartSlice";
 
 interface Product {
   productId: string;
@@ -37,7 +37,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         productName: product.productName,
         price: product.price,
         imageUrl: product.imageUrls[0],
-        quantity: 1,  // Varsayılan olarak 1 adet eklenir
+        quantity: 1, 
+        priceId:product.stripePriceId
       })
     );
   };

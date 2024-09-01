@@ -1,4 +1,4 @@
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "../../ui/skeleton";
 import { Card, CardHeader, CardContent, CardFooter } from "@rt/components/ui/card";
 
 export function RTSkeleton() {
