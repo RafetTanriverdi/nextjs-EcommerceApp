@@ -16,6 +16,7 @@ type PostBody = {
   email: string;
   phone: string;
   address: string;
+  stripeCustomerId?: string;
 };
 
 const Profile = () => {
@@ -51,7 +52,14 @@ const Profile = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit((values: PostBody) => mutation.mutate(values))}>
+      <form
+        onSubmit={form.handleSubmit((values) =>
+          mutation.mutate({
+            ...values,
+            stripeCustomerId: data?.data?.customerStripeId,
+          })
+        )}
+      >
         <FormField
           control={form.control}
           name="name"
@@ -61,11 +69,7 @@ const Profile = () => {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <RTInput.Text
-              {...field}
-              label="Email"
-              readOnly={true} 
-            />
+            <RTInput.Text {...field} label="Email" readOnly={true} />
           )}
         />
         <FormField
