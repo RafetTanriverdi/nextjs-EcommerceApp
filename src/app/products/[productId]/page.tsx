@@ -35,7 +35,7 @@ interface PageProps {
 const Page: React.FC<PageProps> = ({ params }) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const cartItems = useSelector((state: RootState) => state?.cart.items);
   const [selectedImage, setSelectedImage] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
 
@@ -43,7 +43,7 @@ const Page: React.FC<PageProps> = ({ params }) => {
     queryKey: ["productGet", params.productId],
     queryFn: () =>
       axiosInstance.get(
-        ENDPOINT.getProduct.replace(":productId", params.productId)
+        ENDPOINT.PRODUCT.GET.replace(":productId", params.productId)
       ),
   });
 

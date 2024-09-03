@@ -14,7 +14,7 @@ const OrdersContianer = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
-      return axiosInstance.get("/orders");
+      return axiosInstance.get(ENDPOINT.ORDERS.LIST);
     },
   });
 

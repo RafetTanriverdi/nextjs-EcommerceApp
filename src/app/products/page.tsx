@@ -8,6 +8,7 @@ import axiosInstance  from "../../network/httpRequester";
 import awsmobile from "../../aws-exports";
 import { RTSkeleton } from "../../components/PlatformComponent/RTSkeleton/RTSkeleton";
 import ProductCard from "../../components/PlatformComponent/RTProductCart/RTProductCart";
+import { ENDPOINT } from "../../network/EndPoint";
 
 type Product = {
   productId: string;
@@ -29,7 +30,7 @@ const ProductList = () => {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["productsList", categoryParams],
-    queryFn: () => axiosInstance.get(`/products${categoryParams}`),
+    queryFn: () => axiosInstance.get(ENDPOINT.PRODUCT.LIST + categoryParams),
   });
 
   if (isLoading) {

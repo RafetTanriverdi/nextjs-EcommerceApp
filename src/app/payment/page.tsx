@@ -8,7 +8,7 @@ import {
   Elements,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import axiosInstance from "../../network/httpRequester";
@@ -25,6 +25,8 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { useForm, Controller } from "react-hook-form";
 import { Link2, Loader2 } from "lucide-react";
+import { clearCart, updateQuantity } from "../../data/redux/cartSlice";
+import { ENDPOINT } from "../../network/EndPoint";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string
@@ -41,6 +43,7 @@ interface FormValues {
 const PaymentForm: React.FC = () => {
   const stripe = useStripe();
   const elements = useElements();
+  const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const { theme } = useTheme();
   const { control, handleSubmit } = useForm<FormValues>();
@@ -48,23 +51,24 @@ const PaymentForm: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); // Ensures that the component is client-side rendered
+    setIsClient(true);
   }, []);
 
+  const price =
+    cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0) * 100;
   const postbody = {
-    lineItems: cartItems.map((item) => ({
-      price: item.priceId,
-      quantity: item.quantity,
+    orderedItems: cartItems.map((item) => ({
+      productId: item.productId,
+      quantity: item.quantity, 
     })),
-    amount: 120,
+    amount: price,
     customer: "cus_QliXY4FzUdwBZ1",
     customerEmail: "rafet26436@gmail.com",
   };
 
-  const { data } = useQuery({
-    queryKey: ["clientSecret"],
-    queryFn: () => axiosInstance.post("/checkout", postbody),
-  });
+  const handleQuantityChange = (productId: string, quantity: number) => {
+    dispatch(updateQuantity({ productId, quantity }));
+  };
 
   const mutation = useMutation({
     mutationKey: ["buy"],
@@ -78,8 +82,10 @@ const PaymentForm: React.FC = () => {
       if (!cardElement) {
         return;
       }
+      const clientData = await axiosInstance.post(ENDPOINT.CHECKOUT.GETCLIENTSECRET, postbody);
+      console.log(clientData);
 
-      await stripe.confirmCardPayment(data?.data?.clientSecret!, {
+      await stripe.confirmCardPayment(clientData?.data.clientSecret, {
         payment_method: {
           card: cardElement,
           billing_details: {
@@ -94,6 +100,9 @@ const PaymentForm: React.FC = () => {
         },
       });
     },
+    onSuccess: () => {
+      dispatch(clearCart());
+    },
   });
 
   if (!isClient) {
@@ -102,7 +111,7 @@ const PaymentForm: React.FC = () => {
   const cardElementOptions = {
     style: {
       base: {
-        iconColor: "#666EE8",
+        iconColor: "#ffffff",
         color: "#ffffff",
         fontWeight: 400,
         fontFamily: "Arial, sans-serif",
@@ -141,13 +150,16 @@ const PaymentForm: React.FC = () => {
                       type="number"
                       min="1"
                       value={item.quantity}
-                      onChange={(e) => {
-                        // Implement quantity update logic here
-                      }}
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          item.productId,
+                          parseInt(e.target.value)
+                        )
+                      }
                       className="w-16 border rounded"
                     />
                   </div>
-                  <div>{`$${(item.price / 100).toFixed(2)}`}</div>
+                  <div>{`$${item.price.toFixed(2)}`}</div>
                 </div>
               ))}
               <Label htmlFor="promo-code">Promo Code</Label>
@@ -162,13 +174,15 @@ const PaymentForm: React.FC = () => {
         </div>
 
         <div className="w-full lg:w-5/12">
-        <Card>
+          <Card>
             <CardHeader>
               <CardTitle>Payment Details</CardTitle>
               <CardDescription>Enter your payment information</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit((formData) => mutation.mutate(formData))}>
+              <form
+                onSubmit={handleSubmit((formData) => mutation.mutate(formData))}
+              >
                 <div className="mb-4">
                   <Label htmlFor="name">Name on Card</Label>
                   <Controller
@@ -217,8 +231,10 @@ const PaymentForm: React.FC = () => {
                     className="input-card-element border rounded p-2"
                   />
                 </div>
-                <Button type="submit" disabled={!stripe}   > 
-                  {mutation?.isPending && ( <Loader2 className="mr-2 h-4 w-4 animate-spin" />) }
+                <Button type="submit" disabled={!stripe}>
+                  {mutation?.isPending && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   Pay Now
                 </Button>
               </form>

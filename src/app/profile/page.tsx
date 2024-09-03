@@ -8,6 +8,8 @@ import RTInput from "../../components/PlatformComponent/RTInput";
 import { Form, FormField, FormItem } from "../../components/ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "../../components/ui/button";
+import { ENDPOINT } from "../../network/EndPoint";
+import Image from "next/image";
 
 Amplify.configure(awsmobile);
 
@@ -16,22 +18,24 @@ type PostBody = {
   email: string;
   phone: string;
   address: string;
+  profilePicture?: string;
   stripeCustomerId?: string;
 };
 
 const Profile = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["profile"],
-    queryFn: () => axiosInstance.get(`/profile`),
+    queryFn: () => axiosInstance.get(ENDPOINT.PROFILE.GET),
   });
 
-  // Use useForm with the PostBody type
   const form = useForm<PostBody>();
 
   const mutation = useMutation({
     mutationKey: ["profileUpdate"],
-    mutationFn: (values: PostBody) => axiosInstance.patch(`/profile`, values),
+    mutationFn: (values: PostBody) => axiosInstance.patch(ENDPOINT.PROFILE.UPDATE, values),
   });
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (data) {
@@ -41,6 +45,32 @@ const Profile = () => {
       form.setValue("address", data.data.address);
     }
   }, [data, form]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleSubmit = async (values: PostBody) => {
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        values.profilePicture = reader.result as string;
+        mutation.mutate({
+          ...values,
+          stripeCustomerId: data?.data?.customerStripeId,
+        });
+      };
+      reader.readAsDataURL(selectedFile);
+    } else {
+      mutation.mutate({
+        ...values,
+        stripeCustomerId: data?.data?.customerStripeId,
+      });
+    }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -52,14 +82,15 @@ const Profile = () => {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit((values) =>
-          mutation.mutate({
-            ...values,
-            stripeCustomerId: data?.data?.customerStripeId,
-          })
-        )}
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <Image
+        alt="profile picture"
+        src={data?.data?.profilePicture}
+        width={200}
+        height={200}
+        layout="intrinsic" 
+        objectFit="cover" 
+        />
         <FormField
           control={form.control}
           name="name"
@@ -82,6 +113,9 @@ const Profile = () => {
           name="address"
           render={({ field }) => <RTInput.Text {...field} label="Address" />}
         />
+        <FormItem>
+          <input type="file" onChange={handleFileChange} />
+        </FormItem>
         <FormItem>
           <Button type="submit">Save</Button>
         </FormItem>

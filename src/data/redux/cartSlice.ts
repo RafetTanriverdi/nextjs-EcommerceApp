@@ -15,7 +15,6 @@ interface CartState {
 
 const loadInitialState = (): CartItem[] => {
   if (typeof window !== 'undefined') {
-    // Tarayıcıda olduğumuzdan emin olduktan sonra sessionStorage'a erişiyoruz
     const storedItems = sessionStorage.getItem('cartItems');
     if (storedItems) {
       return JSON.parse(storedItems);
@@ -57,9 +56,21 @@ const cartSlice = createSlice({
         sessionStorage.removeItem('cartItems');
       }
     },
+    updateQuantity: (state, action: PayloadAction<{ productId: string; quantity: number }>) => {
+      const itemToUpdate = state.items.find(item => item.productId === action.payload.productId);
+      if (itemToUpdate) {
+        itemToUpdate.quantity = action.payload.quantity;
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem('cartItems', JSON.stringify(state.items));
+        }
+      }
+    },
   },
 });
 
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart, updateQuantity } = cartSlice.actions;
 
 export default cartSlice.reducer;
+
+
+
