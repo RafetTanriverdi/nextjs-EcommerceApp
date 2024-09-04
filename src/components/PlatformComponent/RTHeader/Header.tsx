@@ -27,6 +27,10 @@ import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../app/store";
 import { useTheme } from "next-themes";
+import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
+import { ENDPOINT } from "../../../network/EndPoint";
+import axiosInstance from "../../../network/httpRequester";
 
 Amplify.configure(awsmobile);
 
@@ -40,6 +44,11 @@ const routes = [
 export const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
+
+  const { data } = useQuery({
+    queryKey: ["profile"],
+    queryFn: () => axiosInstance.get(ENDPOINT.PROFILE.GET),
+  });
 
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const [hasMounted, setHasMounted] = useState(false);
@@ -126,6 +135,7 @@ export const Header = () => {
           ) : (
             <Sun onClick={() => setTheme("dark")} />
           )}
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="relative">
@@ -175,8 +185,20 @@ export const Header = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
+                {data?.data?.profilePictureUrl ? (
+                  <div className="rounded-full overflow-hidden w-10 h-10 border border-gray-300">
+                    <Image
+                      alt="profile picture"
+                      src={data?.data?.profilePictureUrl}
+                      width={40}
+                      height={40}
+                      objectFit="cover" // Change to cover to fill the circle
+                      layout="fixed"
+                    />
+                  </div>
+                ) : (
+                  <CircleUser className="h-5 w-5" />
+                )}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

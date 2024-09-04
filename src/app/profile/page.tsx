@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Amplify } from "aws-amplify";
 import awsmobile from "../../aws-exports";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../../network/httpRequester";
 import RTInput from "../../components/PlatformComponent/RTInput";
 import { Form, FormField, FormItem } from "../../components/ui/form";
@@ -17,32 +17,35 @@ type PostBody = {
   name: string;
   email: string;
   phone: string;
-  address: string;
   profilePicture?: string;
   stripeCustomerId?: string;
 };
 
 const Profile = () => {
+  const queryClient = useQueryClient();
+  const form = useForm<PostBody>();
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["profile"],
     queryFn: () => axiosInstance.get(ENDPOINT.PROFILE.GET),
   });
 
-  const form = useForm<PostBody>();
-
   const mutation = useMutation({
     mutationKey: ["profileUpdate"],
-    mutationFn: (values: PostBody) => axiosInstance.patch(ENDPOINT.PROFILE.UPDATE, values),
+    mutationFn: (values: PostBody) =>
+      axiosInstance.patch(ENDPOINT.PROFILE.UPDATE, values),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
   });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (data) {
-      form.setValue("name", data.data.name);
-      form.setValue("email", data.data.email);
-      form.setValue("phone", data.data.phone);
-      form.setValue("address", data.data.address);
+      form.setValue("name", data?.data.name);
+      form.setValue("email", data?.data.email);
+      form.setValue("phone", data?.data.phone);
     }
   }, [data, form]);
 
@@ -82,15 +85,21 @@ const Profile = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
-        <Image
-        alt="profile picture"
-        src={data?.data?.profilePicture}
-        width={200}
-        height={200}
-        layout="intrinsic" 
-        objectFit="cover" 
-        />
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <div className="flex flex-col items-center">
+          <div className="rounded-full overflow-hidden w-40 h-40 mb-4 border-2 border-gray-300 mt-4">
+            <Image
+              alt="profile picture"
+              src={data?.data?.profilePictureUrl }
+              width={160}
+              height={160}
+              layout="fixed"
+              objectFit="cover"
+          
+            />
+          </div>
+        </div>
+
         <FormField
           control={form.control}
           name="name"
@@ -108,11 +117,7 @@ const Profile = () => {
           name="phone"
           render={({ field }) => <RTInput.Text {...field} label="Phone" />}
         />
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => <RTInput.Text {...field} label="Address" />}
-        />
+
         <FormItem>
           <input type="file" onChange={handleFileChange} />
         </FormItem>

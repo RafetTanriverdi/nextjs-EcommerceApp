@@ -7,7 +7,12 @@ const nextConfig = {
         protocol: "https",
         hostname: "product-images-dev-us-east-1.s3.amazonaws.com",
         pathname: "/products/**",
-      }
+      },
+      {
+        protocol: "https",
+        hostname: "profile-pictures-dev-us-east-1.s3.us-east-1.amazonaws.com",
+        pathname: "/profile-pictures/**",
+      },
     ],
   },
 };
