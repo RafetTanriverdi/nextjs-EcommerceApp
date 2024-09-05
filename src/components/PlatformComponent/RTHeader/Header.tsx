@@ -28,7 +28,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../app/store";
 import { useTheme } from "next-themes";
 import Image from "next/image";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ENDPOINT } from "../../../network/EndPoint";
 import axiosInstance from "../../../network/httpRequester";
 
@@ -44,13 +44,14 @@ const routes = [
 export const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data } = useQuery({
     queryKey: ["profile"],
     queryFn: () => axiosInstance.get(ENDPOINT.PROFILE.GET),
   });
 
-  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const cartItems = useSelector((state: RootState) => state?.cart.items);
   const [hasMounted, setHasMounted] = useState(false);
   const { setTheme, theme } = useTheme();
 
@@ -62,8 +63,10 @@ export const Header = () => {
     try {
       await signOut();
       Cookies.remove("accessToken");
-      router.push("/login");
+      router.push("/auth/login");
       router.refresh();
+      queryClient.removeQueries();
+
     } catch (error) {
       console.error("Error signing out:", error);
     }

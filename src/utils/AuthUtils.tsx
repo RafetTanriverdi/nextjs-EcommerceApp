@@ -11,7 +11,7 @@ interface AuthenticatedProps {
 
 export async function checkUserAuthentication(
   context: GetServerSidePropsContext,
-  redirectUrl: string = '/login'
+  redirectUrl: string = '/auth/login'
 ): Promise<GetServerSidePropsResult<AuthenticatedProps>> {
   try {
     const user = await getCurrentUser();

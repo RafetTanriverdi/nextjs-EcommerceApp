@@ -7,7 +7,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const protectedRoutes = ["/profile", "/settings"];
-  const publicRoutes = ["/login", "/register"];
+  const publicRoutes = ["/auth/login", "/auth/register"];
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
   );
@@ -23,7 +23,7 @@ export async function middleware(req: NextRequest) {
 
   if (isProtectedRoute) {
     if (!accessToken) {
-      url.pathname = "/login";
+      url.pathname = "/auth/login";
       return NextResponse.redirect(url);
     }
 
@@ -31,7 +31,7 @@ export async function middleware(req: NextRequest) {
       return NextResponse.next();
     } catch (error) {
       console.error("Error during authentication:", error);
-      url.pathname = "/login";
+      url.pathname = "/auth/login";
       return NextResponse.redirect(url);
     }
   }
@@ -43,7 +43,6 @@ export const config = {
   matcher: [
     "/profile/:path*",
     "/settings/:path*",
-    "/login",
-    "/register",
+    "/auth/:path*",
   ],
 };
