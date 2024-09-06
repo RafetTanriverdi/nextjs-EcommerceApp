@@ -31,6 +31,7 @@ import Image from "next/image";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ENDPOINT } from "../../../network/EndPoint";
 import axiosInstance from "../../../network/httpRequester";
+import RTButton from "../RTButton";
 
 Amplify.configure(awsmobile);
 
@@ -59,6 +60,7 @@ export const Header = () => {
     setHasMounted(true);
   }, []);
 
+  const isLogedIn = Cookies.get("accessToken") || null;
   const handleLogout = async () => {
     try {
       await signOut();
@@ -66,7 +68,6 @@ export const Header = () => {
       router.push("/auth/login");
       router.refresh();
       queryClient.removeQueries();
-
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -187,22 +188,33 @@ export const Header = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full">
-                {data?.data?.profilePictureUrl ? (
-                  <div className="rounded-full overflow-hidden w-10 h-10 border border-gray-300">
-                    <Image
-                      alt="profile picture"
-                      src={data?.data?.profilePictureUrl}
-                      width={40}
-                      height={40}
-                      objectFit="cover" // Change to cover to fill the circle
-                      layout="fixed"
-                    />
-                  </div>
-                ) : (
-                  <CircleUser className="h-5 w-5" />
-                )}
-              </Button>
+              {isLogedIn ? (
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full"
+                >
+                  {data?.data?.profilePictureUrl ? (
+                    <div className="rounded-full overflow-hidden w-10 h-10 border border-gray-300">
+                      <Image
+                        alt="profile picture"
+                        src={data?.data?.profilePictureUrl}
+                        width={40}
+                        height={40}
+                        objectFit="cover" // Change to cover to fill the circle
+                        layout="fixed"
+                      />
+                    </div>
+                  ) : (
+                    <CircleUser className="h-5 w-5" />
+                  )}
+                </Button>
+              ) : (
+                <RTButton.Action
+                  onClick={() => router.push("/auth/login")}
+                  text="Sign In"
+                />
+              )}
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => router.push("/profile")}>

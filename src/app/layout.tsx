@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { ThemeProvider } from "../components/ThemeProvider/theme-provider";
+import { Toaster } from "../components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
               >
                 <Header />
                 {children}
+                <Toaster   />
               </ThemeProvider>
             </Provider>
             <ReactQueryDevtools initialIsOpen={false} />
