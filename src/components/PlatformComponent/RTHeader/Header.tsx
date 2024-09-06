@@ -213,6 +213,7 @@ export const Header = () => {
                 <RTButton.Action
                   onClick={() => router.push("/auth/login")}
                   text="Sign In"
+                  size="sm"
                 />
               )}
             </DropdownMenuTrigger>

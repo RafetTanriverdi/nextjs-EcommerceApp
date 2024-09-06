@@ -6,7 +6,7 @@ export async function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
   const { pathname } = req.nextUrl;
 
-  const protectedRoutes = ["/profile", "/settings"];
+  const protectedRoutes = ["/profile", "/settings", "/payment"];
   const publicRoutes = ["/auth/login", "/auth/register"];
   const isProtectedRoute = protectedRoutes.some((route) =>
     pathname.startsWith(route)
@@ -41,6 +41,7 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    "/payment/:path*",
     "/profile/:path*",
     "/settings/:path*",
     "/auth/:path*",
