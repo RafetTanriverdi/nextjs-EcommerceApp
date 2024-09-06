@@ -13,7 +13,7 @@ const NotFoundPage = () => {
   const router = useRouter();
 
   const goBackHome = () => {
-    router.push("/"); // Ana sayfaya yönlendirme
+    router.push("/"); 
   };
 
   return (
@@ -25,13 +25,13 @@ const NotFoundPage = () => {
               404
             </CardTitle>
             <p className="text-xl text-gray-500 mt-4">
-              Oops! The page you're looking for doesn't exist.
+              Oops! The page you&apos;re looking for doesn&apos;t exist.
             </p>
           </CardHeader>
           <CardContent className="px-8 py-8 ">
             <p className="text-lg text-gray-500">
-              Maybe it was removed, or you mistyped the URL. Let's get you back
-              on track!
+              Maybe it was removed, or you mistyped the URL. Let&apos;s get you
+              back on track!
             </p>
             <Button
               onClick={goBackHome}
@@ -42,7 +42,6 @@ const NotFoundPage = () => {
             </Button>
           </CardContent>
         </Card>
-        
       </div>
     </div>
   );
