@@ -54,6 +54,7 @@ export const Header = () => {
 
   const cartItems = useSelector((state: RootState) => state?.cart.items);
   const [hasMounted, setHasMounted] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const { setTheme, theme } = useTheme();
 
   useEffect(() => {
@@ -98,18 +99,19 @@ export const Header = () => {
             </Link>
           ))}
         </nav>
-        <Sheet>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger asChild>
             <Button
               variant="outline"
               size="icon"
               className="shrink-0 md:hidden"
+              onClick={() => setIsSheetOpen((prev) => !prev)}
             >
               <Menu className="h-5 w-5" />
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left">
+          <SheetContent side="left"  >
             <nav className="grid gap-6 text-lg font-medium">
               <Link
                 href="#"
@@ -127,6 +129,7 @@ export const Header = () => {
                       ? "text-foreground font-bold"
                       : "text-muted-foreground"
                   }`}
+                  onClick={() => setIsSheetOpen(false)}
                 >
                   {route.name}
                 </Link>
