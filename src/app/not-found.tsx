@@ -42,9 +42,7 @@ const NotFoundPage = () => {
             </Button>
           </CardContent>
         </Card>
-        <footer className="text-gray-500">
-          &copy; {new Date().getFullYear()} Your Company. All rights reserved.
-        </footer>
+        
       </div>
     </div>
   );
