@@ -14,7 +14,7 @@ const profileRoutes = [
   {
     icon: <Home className="h-4 w-4" />,
     name: "Dashboard",
-    href: "/profile",
+    href: "/profile/info",
   },
   {
     icon: <ShoppingCart className="h-4 w-4" />,
@@ -42,8 +42,8 @@ export const SideBar = () => {
   const pathname = usePathname();
   const active = pathname.split("/")[2];
   return (
-    <div className="hidden border-r bg-muted/40 md:block">
-      <div className="flex h-full max-h-max flex-col gap-2">
+    <div className=" border-r bg-muted/40 w-full min-h-[calc(100vh-4rem)]">
+      <div className="flex h-full max-h-max flex-col gap-2 ">
         <div className="flex-1">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
             {profileRoutes.map((route) => (

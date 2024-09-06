@@ -122,8 +122,10 @@ export const Header = () => {
                 <Link
                   key={route.href}
                   href={route.href}
-                  className={`text-muted-foreground hover:text-foreground ${
-                    pathname === route.href ? "text-foreground font-bold" : ""
+                  className={` transition-colors hover:text-foreground ${
+                    pathname === route.href
+                      ? "text-foreground font-bold"
+                      : "text-muted-foreground"
                   }`}
                 >
                   {route.name}
@@ -188,7 +190,7 @@ export const Header = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              {isLogedIn ? (
+              {hasMounted&&isLogedIn ? (
                 <Button
                   variant="secondary"
                   size="icon"
