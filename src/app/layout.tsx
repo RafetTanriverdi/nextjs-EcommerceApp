@@ -22,8 +22,10 @@ export default function RootLayout({
   return (
     <>
       <head>
+        
         <link rel="icon" href="/favicon.ico" sizes="any"></link>
       </head>
+      
       <html lang="en">
         <body className={inter.className}>
           <QueryClientProvider client={queryClient}>

@@ -55,13 +55,21 @@ export const Header = () => {
   const cartItems = useSelector((state: RootState) => state?.cart.items);
   const [hasMounted, setHasMounted] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { setTheme, theme } = useTheme();
 
   useEffect(() => {
     setHasMounted(true);
+    const id = localStorage.getItem(
+      `CognitoIdentityServiceProvider.${process.env.NEXT_PUBLIC_AWS_USER_POOL_WEB_CLIENT_ID}.LastAuthUser`
+    );
+    const isLogin =
+      !!localStorage.getItem(
+        `CognitoIdentityServiceProvider.${process.env.NEXT_PUBLIC_AWS_USER_POOL_WEB_CLIENT_ID}.${id}.accessToken`
+      ) || false;
+    setIsLoggedIn(isLogin);
   }, []);
 
-  const isLogedIn = Cookies.get("accessToken") || null;
   const handleLogout = async () => {
     try {
       await signOut();
@@ -111,7 +119,7 @@ export const Header = () => {
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left"  >
+          <SheetContent side="left">
             <nav className="grid gap-6 text-lg font-medium">
               <Link
                 href="#"
@@ -193,7 +201,7 @@ export const Header = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              {hasMounted&&isLogedIn ? (
+              {hasMounted && isLoggedIn ? (
                 <Button
                   variant="secondary"
                   size="icon"
