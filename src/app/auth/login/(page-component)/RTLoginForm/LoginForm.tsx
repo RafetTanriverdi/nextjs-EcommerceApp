@@ -14,7 +14,6 @@ import { Input } from "../../../../../components/ui/input";
 import { Label } from "../../../../../components/ui/label";
 import { fetchAuthSession, signIn } from "aws-amplify/auth";
 import { Amplify } from "aws-amplify";
-import awsmobile from "../../../../../aws-exports";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useMutation } from "@tanstack/react-query";
@@ -22,9 +21,9 @@ import { useToast } from "../../../../../hooks/use-toast";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import RTButton from "../../../../../components/PlatformComponent/RTButton";
 import RTInput from "../../../../../components/PlatformComponent/RTInput";
+import awsmobile from "../../../../../aws-exports";
 
 Amplify.configure(awsmobile);
-
 type SignUpParameters = {
   password: string;
   email: string;
