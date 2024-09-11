@@ -38,7 +38,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         price: product.price,
         imageUrl: product.imageUrls[0],
         quantity: 1, 
-        priceId:product.stripePriceId
+        priceId:product.stripePriceId,
+        description:product.description
       })
     );
   };

@@ -1,22 +1,29 @@
 "use client";
+
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@rt/components/ui/button";
 import { Card, CardContent, CardHeader } from "@rt/components/ui/card";
-import { RootState, AppDispatch } from "@rt/app/store"; // Redux store'un root state ve dispatch tanımını içeren dosya
-import { removeFromCart, updateQuantity } from "@rt/data/redux/cartSlice"; // Cart slice import
+import { RootState, AppDispatch } from "@rt/app/store";
+import { removeFromCart, updateQuantity } from "@rt/data/redux/cartSlice";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Input } from "../../components/ui/input";
 
-// Cart item tipini tanımlayalım
 interface CartItemProps {
   item: {
     productId: string;
     productName: string;
     price: number;
     quantity: number;
+    imageUrl: string;
+    description: string;
   };
 }
 
 const CartItem = ({ item }: CartItemProps) => {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   const handleUpdateQuantity = (newQuantity: number) => {
     if (newQuantity <= 0) return;
@@ -31,8 +38,22 @@ const CartItem = ({ item }: CartItemProps) => {
 
   return (
     <Card className="mb-4">
-      <CardHeader className="flex justify-between items-center">
-        <span className="font-bold">{item.productName}</span>
+      <CardHeader className="flex-row justify-between gap-9  items-center ">
+        <div
+          className="flex gap-3 items-center cursor-pointer"
+          onClick={() => router.push(`products/${item.productId}`)}
+        >
+          <Image
+            src={item.imageUrl}
+            width={100}
+            height={100}
+            alt={item.productName}
+          />
+          <div className="">
+            <span className="font-bold">{item.productName}</span>
+            <p className="line-clamp-3">{item.description}</p>
+          </div>
+        </div>
         <Button variant="ghost" size="sm" onClick={handleRemoveItem}>
           Sil
         </Button>
@@ -43,11 +64,23 @@ const CartItem = ({ item }: CartItemProps) => {
           <p>{item.price} TL</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button onClick={() => handleUpdateQuantity(item.quantity - 1)}>
+          <Button
+            size={"sm"}
+            variant={"outline"}
+            onClick={() => handleUpdateQuantity(item.quantity - 1)}
+          >
             -
           </Button>
-          <span>{item.quantity}</span>
-          <Button onClick={() => handleUpdateQuantity(item.quantity + 1)}>
+          <Input
+            value={item.quantity}
+            onChange={(e) => handleUpdateQuantity(Number(e.target.value))}
+            
+          />
+          <Button
+            size={"sm"}
+            variant={"outline"}
+            onClick={() => handleUpdateQuantity(item.quantity + 1)}
+          >
             +
           </Button>
         </div>
@@ -57,7 +90,12 @@ const CartItem = ({ item }: CartItemProps) => {
 };
 
 const Cart = () => {
+  const [isClient, setIsClient] = useState(false); // İstemci render edildi mi?
   const cartItems = useSelector((state: RootState) => state.cart.items);
+
+  useEffect(() => {
+    setIsClient(true); // İstemci render edildikten sonra isClient'i true yapıyoruz
+  }, []);
 
   // Toplam fiyat hesaplaması, acc ve item tipleri belirtiliyor.
   const total = cartItems.reduce(
@@ -65,6 +103,11 @@ const Cart = () => {
       acc + item.price * item.quantity,
     0
   );
+
+  // Eğer sunucu tarafında render ediliyorsa boş bir div döndür
+  if (!isClient) {
+    return <div>Yükleniyor...</div>;
+  }
 
   return (
     <div className="container mx-auto p-4">

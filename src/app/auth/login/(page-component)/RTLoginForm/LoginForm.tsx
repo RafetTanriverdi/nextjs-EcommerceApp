@@ -54,8 +54,7 @@ const LoginForm = () => {
         console.error("Access token is undefined");
       }
       router.push("/profile");
-      console.log(isSignedIn, nextStep);
-      router.refresh();
+       router.refresh();
     },
     onSuccess() {
       toast({
