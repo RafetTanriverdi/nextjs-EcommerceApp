@@ -9,6 +9,7 @@ import { removeFromCart, updateQuantity } from "@rt/data/redux/cartSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Input } from "../../components/ui/input";
+import { Minus, PlusIcon } from "lucide-react";
 
 interface CartItemProps {
   item: {
@@ -18,6 +19,7 @@ interface CartItemProps {
     quantity: number;
     imageUrl: string;
     description: string;
+    stock: number;
   };
 }
 
@@ -26,14 +28,12 @@ const CartItem = ({ item }: CartItemProps) => {
   const router = useRouter();
 
   const handleUpdateQuantity = (newQuantity: number) => {
-    if (newQuantity <= 0) return;
+    if (newQuantity < 0) return;
+    if (newQuantity > item.stock) return;
+    if (newQuantity > 100) return;
     dispatch(
       updateQuantity({ productId: item.productId, quantity: newQuantity })
     );
-  };
-
-  const handleRemoveItem = () => {
-    dispatch(removeFromCart(item.productId));
   };
 
   return (
@@ -54,7 +54,11 @@ const CartItem = ({ item }: CartItemProps) => {
             <p className="line-clamp-3">{item.description}</p>
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={handleRemoveItem}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => dispatch(removeFromCart(item.productId))}
+        >
           Sil
         </Button>
       </CardHeader>
@@ -68,20 +72,24 @@ const CartItem = ({ item }: CartItemProps) => {
             size={"sm"}
             variant={"outline"}
             onClick={() => handleUpdateQuantity(item.quantity - 1)}
+            disabled={item.quantity === 1}
           >
-            -
+            {<Minus className="w-4 h-4" />}
           </Button>
           <Input
-            value={item.quantity}
+            className="w-16  text-center "
+            value={item.quantity }
             onChange={(e) => handleUpdateQuantity(Number(e.target.value))}
-            
+            type="number"
           />
+
           <Button
             size={"sm"}
             variant={"outline"}
             onClick={() => handleUpdateQuantity(item.quantity + 1)}
+            disabled={item.quantity === item.stock}
           >
-            +
+            {<PlusIcon className="w-4 h-4" />}
           </Button>
         </div>
       </CardContent>
@@ -111,8 +119,8 @@ const Cart = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className=" col-span-1 md:col-span-2">
           {cartItems.length > 0 ? (
             cartItems.map((item) => (
               <CartItem key={item.productId} item={item} />

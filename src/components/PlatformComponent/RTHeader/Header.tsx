@@ -60,15 +60,12 @@ export const Header = () => {
 
   useEffect(() => {
     setHasMounted(true);
-    const id = localStorage.getItem(
-      `CognitoIdentityServiceProvider.${process.env.NEXT_PUBLIC_AWS_USER_POOL_WEB_CLIENT_ID}.LastAuthUser`
-    );
-    const isLogin =
-      !!localStorage.getItem(
-        `CognitoIdentityServiceProvider.${process.env.NEXT_PUBLIC_AWS_USER_POOL_WEB_CLIENT_ID}.${id}.accessToken`
-      ) || false;
-    setIsLoggedIn(isLogin);
-  }, []);
+    if (data) {
+      setIsLoggedIn(true);
+    }else{
+      setIsLoggedIn(false);
+    }
+  }, [data]);
 
   const handleLogout = async () => {
     try {
@@ -77,6 +74,7 @@ export const Header = () => {
       router.push("/auth/login");
       router.refresh();
       queryClient.removeQueries();
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
     } catch (error) {
       console.error("Error signing out:", error);
     }
