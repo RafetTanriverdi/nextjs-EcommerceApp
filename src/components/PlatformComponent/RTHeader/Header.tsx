@@ -62,7 +62,7 @@ export const Header = () => {
     setHasMounted(true);
     if (data) {
       setIsLoggedIn(true);
-    }else{
+    } else {
       setIsLoggedIn(false);
     }
   }, [data]);
@@ -151,51 +151,24 @@ export const Header = () => {
             <Sun onClick={() => setTheme("dark")} />
           )}
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div className="relative">
-                <Button variant="outline" size="icon" className="relative">
-                  <ShoppingCart className="h-5 w-5" />
-                </Button>
-                {hasMounted && cartItems.length > 0 && (
-                  <Badge
-                    variant="outline"
-                    className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs px-2 py-1 rounded-full"
-                  >
-                    {cartItems.length}
-                  </Badge>
-                )}
-              </div>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="end" className="w-64 p-2">
-              <div className="p-2">
-                <h4 className="font-bold">Sepet Özeti</h4>
-                {cartItems.length > 0 ? (
-                  <>
-                    {cartItems?.map((item) => (
-                      <div
-                        key={item.productId}
-                        className="flex justify-between"
-                      >
-                        <span>{item.productName}</span>
-                        <span>${item?.price.toFixed(2)}</span>
-                      </div>
-                    ))}
-                    <Button
-                      variant="default"
-                      className="w-full mt-2"
-                      onClick={() => router.push("/cart")}
-                    >
-                      Sepete Git
-                    </Button>
-                  </>
-                ) : (
-                  <p>Sepetiniz boş</p>
-                )}
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="relative">
+            <Button
+              variant="outline"
+              size="icon"
+              className="relative"
+              onClick={() => router.push("/cart")}
+            >
+              {<ShoppingCart className="h-5 w-5" />}
+            </Button>
+            {hasMounted && cartItems.length > 0 && (
+              <Badge
+                variant="outline"
+                className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs px-2 py-1 rounded-full"
+              >
+                {cartItems.length}
+              </Badge>
+            )}
+          </div>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

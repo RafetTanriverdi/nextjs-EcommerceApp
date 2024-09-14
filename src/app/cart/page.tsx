@@ -9,7 +9,7 @@ import { removeFromCart, updateQuantity } from "@rt/data/redux/cartSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Input } from "../../components/ui/input";
-import { Minus, PlusIcon } from "lucide-react";
+import { Minus, PlusIcon, Trash } from "lucide-react";
 
 interface CartItemProps {
   item: {
@@ -26,14 +26,35 @@ interface CartItemProps {
 const CartItem = ({ item }: CartItemProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const [inputValue, setInputValue] = useState<string>(String(item.quantity));
 
-  const handleUpdateQuantity = (newQuantity: number) => {
-    if (newQuantity < 0) return;
-    if (newQuantity > item.stock) return;
-    if (newQuantity > 100) return;
+  const handleUpdateQuantity = (newQuantity: string) => {
+    if (newQuantity === "") {
+      setInputValue("");
+      return;
+    }
+    const parsedValue = parseInt(newQuantity, 10);
+    if (
+      isNaN(parsedValue) ||
+      parsedValue <= 0 ||
+      parsedValue > 100 ||
+      parsedValue > item.stock
+    ) {
+      setInputValue("");
+      return;
+    }
+
+    setInputValue(String(parsedValue));
     dispatch(
-      updateQuantity({ productId: item.productId, quantity: newQuantity })
+      updateQuantity({ productId: item.productId, quantity: parsedValue })
     );
+  };
+
+  const handleBlur = () => {
+    if (inputValue === "" || parseInt(inputValue, 10) <= 0) {
+      setInputValue("1");
+      handleUpdateQuantity("1");
+    }
   };
 
   return (
@@ -49,48 +70,47 @@ const CartItem = ({ item }: CartItemProps) => {
             height={100}
             alt={item.productName}
           />
-          <div className="">
+          <div>
             <span className="font-bold">{item.productName}</span>
-            <p className="line-clamp-3">{item.description}</p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => dispatch(removeFromCart(item.productId))}
-        >
-          Sil
-        </Button>
+        <div className="flex items-center space-x-2 gap-20">
+          <div className="flex items-center gap-2">
+            <Button
+              size={"sm"}
+              variant={"outline"}
+              onClick={() => handleUpdateQuantity(String(item.quantity - 1))}
+              disabled={item.quantity === 1}
+            >
+              {<Minus className="w-4 h-4" />}
+            </Button>
+            <Input
+              className="w-14 text-center"
+              value={inputValue}
+              onChange={(e) => handleUpdateQuantity(e.target.value)}
+              onBlur={handleBlur}
+            />
+            <Button
+              size={"sm"}
+              variant={"outline"}
+              onClick={() => handleUpdateQuantity(String(item.quantity + 1))}
+              disabled={item.quantity === item.stock}
+            >
+              {<PlusIcon className="w-4 h-4" />}
+            </Button>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => dispatch(removeFromCart(item.productId))}
+          >
+            <Trash className="h-4 w-4" />
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="flex justify-between items-center">
         <div>
-          <h4 className="font-bold">{item.productName}</h4>
-          <p>{item.price} TL</p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            size={"sm"}
-            variant={"outline"}
-            onClick={() => handleUpdateQuantity(item.quantity - 1)}
-            disabled={item.quantity === 1}
-          >
-            {<Minus className="w-4 h-4" />}
-          </Button>
-          <Input
-            className="w-16  text-center "
-            value={item.quantity }
-            onChange={(e) => handleUpdateQuantity(Number(e.target.value))}
-            type="number"
-          />
-
-          <Button
-            size={"sm"}
-            variant={"outline"}
-            onClick={() => handleUpdateQuantity(item.quantity + 1)}
-            disabled={item.quantity === item.stock}
-          >
-            {<PlusIcon className="w-4 h-4" />}
-          </Button>
+          <p className="line-clamp-3">{item.description}</p>
         </div>
       </CardContent>
     </Card>
@@ -105,14 +125,12 @@ const Cart = () => {
     setIsClient(true); // İstemci render edildikten sonra isClient'i true yapıyoruz
   }, []);
 
-  // Toplam fiyat hesaplaması, acc ve item tipleri belirtiliyor.
   const total = cartItems.reduce(
     (acc: number, item: { price: number; quantity: number }) =>
       acc + item.price * item.quantity,
     0
   );
 
-  // Eğer sunucu tarafında render ediliyorsa boş bir div döndür
   if (!isClient) {
     return <div>Yükleniyor...</div>;
   }
