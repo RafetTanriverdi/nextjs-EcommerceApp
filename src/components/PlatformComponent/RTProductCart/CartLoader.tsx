@@ -1,7 +1,7 @@
 import { Skeleton } from "../../ui/skeleton";
 import { Card, CardHeader, CardContent, CardFooter } from "@rt/components/ui/card";
 
-export function RTSkeleton() {
+export function CartLoader() {
   return (
     <Card className="rounded-lg shadow-md hover:shadow-lg transition-shadow">
       <CardHeader className="relative">

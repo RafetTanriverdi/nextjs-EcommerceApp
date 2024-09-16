@@ -37,9 +37,9 @@ Amplify.configure(awsmobile);
 
 const routes = [
   { name: "Home", href: "/products" },
-  { name: "Orders", href: "/orders" },
+  { name: "Orders", href: "/profile/orders" },
   { name: "Categories", href: "/categories" },
-  { name: "Settings", href: "/settings" },
+  { name: "Settings", href: "/profile/settings" },
 ];
 
 export const Header = () => {
