@@ -32,6 +32,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ENDPOINT } from "../../../network/EndPoint";
 import axiosInstance from "../../../network/httpRequester";
 import RTButton from "../RTButton";
+import { AvatarImage, Avatar, AvatarFallback } from "../../ui/avatar";
 
 Amplify.configure(awsmobile);
 
@@ -55,17 +56,11 @@ export const Header = () => {
   const cartItems = useSelector((state: RootState) => state?.cart.items);
   const [hasMounted, setHasMounted] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { setTheme, theme } = useTheme();
 
   useEffect(() => {
     setHasMounted(true);
-    if (data) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, [data]);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -172,23 +167,19 @@ export const Header = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              {hasMounted && isLoggedIn ? (
+              {hasMounted && data ? (
                 <Button
                   variant="secondary"
                   size="icon"
                   className="rounded-full"
                 >
                   {data?.data?.profilePictureUrl ? (
-                    <div className="rounded-full overflow-hidden w-10 h-10 border border-gray-300">
-                      <Image
-                        alt="profile picture"
-                        src={data?.data?.profilePictureUrl}
-                        width={40}
-                        height={40}
-                        objectFit="cover" // Change to cover to fill the circle
-                        layout="fixed"
-                      />
-                    </div>
+                    <Avatar>
+                      <AvatarImage src={data?.data?.profilePictureUrl} />
+                      <AvatarFallback>
+                        {data?.data.name.substring(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
                   ) : (
                     <CircleUser className="h-5 w-5" />
                   )}

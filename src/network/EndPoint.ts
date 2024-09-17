@@ -15,7 +15,13 @@ export const ENDPOINT = {
     GET: "/profile",
     UPDATE: "/profile",
   },
-  ADDRESS: "profile/address",
+  ADDRESS:{
+    ADD: "/address",
+    LIST: "/address",
+    GET: "/address/:addressId",
+    UPDATE: "/address/:addressId",
+    DELETE: "/address/:addressId",
+  },
   CHECKOUT: {
     GETCLIENTSECRET: "/checkout",
   },

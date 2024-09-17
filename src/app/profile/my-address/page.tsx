@@ -1,5 +1,5 @@
 import React from "react";
-import MyAddressContainer from "./(page-component)/MyAdressContainer";
+import MyAddressContainer from "./page.client";
 import { Metadata } from "next";
 
 export const metadata:Metadata = {
