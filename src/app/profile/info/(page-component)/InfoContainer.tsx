@@ -28,7 +28,6 @@ type PostBody = {
   email: string;
   phone: string;
   profilePicture?: string;
-  cropData?: any; // Crop data for the image
   stripeCustomerId?: string;
 };
 
@@ -69,12 +68,12 @@ const InfoContainer: React.FC = () => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      setIsDialogOpen(true); // Open dialog for cropping
+      setIsDialogOpen(true); 
     }
   };
 
   const onCropComplete = (_: any, croppedAreaPixels: any) => {
-    setCroppedAreaPixels(croppedAreaPixels); // Store cropped area
+    setCroppedAreaPixels(croppedAreaPixels); 
   };
 
   const handleCropSelect = async () => {
@@ -83,17 +82,15 @@ const InfoContainer: React.FC = () => {
         URL.createObjectURL(selectedFile),
         croppedAreaPixels
       );
-      console.log("Cropped Image Base64:", croppedImageBase64); // Log Base64 image
-      setCroppedImage(croppedImageBase64); // Store cropped image in base64 format
-      setIsDialogOpen(false); // Close dialog after cropping
+      console.log("Cropped Image Base64:", croppedImageBase64); 
+      setCroppedImage(croppedImageBase64); 
+      setIsDialogOpen(false); 
     }
   };
 
   const handleSubmit: SubmitHandler<PostBody> = async (values) => {
     if (croppedImage) {
-      // Crop bilgilerini de gönderiyoruz
       values.profilePicture = croppedImage;
-      values.cropData = croppedAreaPixels; // Croplama alanı bilgilerini gönderiyoruz
       mutation.mutate({
         ...values,
         stripeCustomerId: data?.data?.customerStripeId,

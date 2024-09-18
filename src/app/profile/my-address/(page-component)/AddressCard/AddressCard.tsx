@@ -19,6 +19,7 @@ interface AddressCardProps {
   country: string;
   postalCode: string;
   isDefault: boolean;
+  addressId: string;
 }
 
 const AddressCard = (props: AddressCardProps) => {

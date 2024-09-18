@@ -64,6 +64,16 @@ const PaymentForm: React.FC = () => {
     amount: price,
     customer: "cus_QliXY4FzUdwBZ1",
     customerEmail: "rafet26436@gmail.com",
+    shippingAddress:{
+      name: "Rafet",
+      phone: "+123456789",
+      city: "Dhaka",
+      country: "Bangladesh",
+      line1: "Dhanmondi",
+      line2: "Road 1",
+      postal_code: "1205",
+      state: "Dhaka",
+    }
   };
 
   const handleQuantityChange = (productId: string, quantity: number) => {
