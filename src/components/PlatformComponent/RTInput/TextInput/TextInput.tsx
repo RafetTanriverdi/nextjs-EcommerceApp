@@ -21,6 +21,7 @@ const TextInput = ({
   placeholder,
   id,
   type,
+  className,
 }: {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string;
@@ -32,6 +33,7 @@ const TextInput = ({
   placeholder?: string;
   id?: string;
   type?: string;
+  className?: string;
 }) => {
   if (form)
     return (
@@ -44,6 +46,7 @@ const TextInput = ({
               <FormLabel>{label}</FormLabel>
               <FormControl>
                 <Input
+                  className={className}
                   required={true}
                   onChange={onChange}
                   value={value}
@@ -63,6 +66,7 @@ const TextInput = ({
       <div className="grid gap-1">
         <Label htmlFor={id}>{label}</Label>
         <Input
+        className={className}
           type={type ? type : "text"}
           id={id}
           required={true}
@@ -71,7 +75,6 @@ const TextInput = ({
           defaultValue={defaultValue}
           readOnly={readOnly}
           placeholder={placeholder}
-          
         />
       </div>
     );
