@@ -1,47 +1,14 @@
-"use client";
-import { useQuery } from "@tanstack/react-query";
-import React, { Suspense } from "react";
-import axiosInstance from "../../../network/httpRequester";
-import { ENDPOINT } from "../../../network/EndPoint";
+import React from "react";
+import OrdersContianer from "./page.client";
+import { Metadata } from "next";
 
-type Orders = {
-  orderId: string;
-  amountTotal: number;
-  productName: string;
+export const metadata:Metadata={
+  title: "Orders",
+  description: "Orders",
 };
 
-const OrdersContianer = () => {
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["orders"],
-    queryFn: async () => {
-      return axiosInstance.get(ENDPOINT.ORDERS.LIST);
-    },
-  });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-  return (
-    <>
-      {data?.data.map((e: Orders) => (
-        <div key={e.orderId}>
-          <h1>{e.productName}</h1>
-          <p>{"$" + (e.amountTotal / 100).toFixed(2)}</p>
-        </div>
-      ))}
-    </>
-  );
+const Orders = () => {
+  return <OrdersContianer />;
 };
 
-const orders = () => {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <OrdersContianer />
-    </Suspense>
-  );
-};
-
-export default orders;
+export default Orders;

@@ -21,8 +21,8 @@ const CardSkeleton = () => {
       </CardHeader>
       <CardContent>
         <div className="flex justify-between">
-          <Skeleton className=" h-6  w-36" />
-          <Skeleton className=" h-6 w-36" />
+          <Skeleton className=" h-6  w-20" />
+          <Skeleton className=" h-6 w-20" />
         </div>
         <Separator className="my-4" />
         <div>
@@ -49,7 +49,7 @@ const PageLoading = () => {
   return (
     <div className="">
       <Skeleton className=" h-8 m-3 w-36" />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-5 justify-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-5 justify-center m-3">
       {[1,2,3,4,5,6,7,8].map((item) => (
         <CardSkeleton key={item} />
         ))}

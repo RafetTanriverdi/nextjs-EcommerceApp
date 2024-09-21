@@ -142,7 +142,7 @@ const AddAddressModal = ({
           <Button onClick={() => mutation.mutate()}>
             {mutation.isPending && (
               <LoaderCircle className="w-5 h-5 animate-spin mr-2" />
-            )}{" "}
+            )}
             Save Address
           </Button>
         </DialogFooter>
