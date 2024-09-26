@@ -4,6 +4,7 @@ import React from 'react'
 import axiosInstance from '../../../network/httpRequester';
 import { ENDPOINT } from '../../../network/EndPoint';
 import OrdersCard from './(page-component)/OrdersCard/OrdersCard';
+import PageLoader from './(page-component)/PageLoader/PageLoader';
 
 
 const OrdersContianer = () => {
@@ -15,14 +16,18 @@ const OrdersContianer = () => {
     });
   
     if (isLoading) {
-      return <div>Loading...</div>;
+      return (<>
+        <PageLoader />
+        <PageLoader />
+      </>
+      );
     }
     if (error) {
       return <div>Error: {error.message}</div>;
     }
     return (
       <>
-        {data?.data.map((item:any) => (
+        {data?.data?.map((item:any) => (
           <OrdersCard key={item.orderId} props={item} />
         ))}
       </>

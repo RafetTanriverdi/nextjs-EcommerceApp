@@ -11,6 +11,7 @@ import { Button } from "../../../../../components/ui/button";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { PackageOpen } from "lucide-react";
+import { Separator } from "../../../../../components/ui/separator";
 
 interface OrderDetails {
   orderId: string;
@@ -65,46 +66,53 @@ const OrdersCard = ({ props }: { props: OrderDetails }) => {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="md:m-4 p-3">
+      <CardContent className="md:m-4 md:p-3 p-1">
         {props.products.map((product, index) => (
           <div
             key={index}
-            className=" items-center gap-5 grid grid-cols-2 md:grid-cols-4 border-2 p-2 m-1 md:m-2 rounded-lg"
+            className=" items-center grid grid-cols-2 md:grid-cols-4 border-2 p-2 m-1 md:m-2 rounded-lg"
           >
-            <div className="flex items-center gap-5">
+            <div className=" flex items-center ">
               <Image
-                className="my-2 object-contain imag "
+                className="my-2 "
                 key={index}
                 src={product.productImage[0]}
                 alt="product"
                 width={75}
                 height={75}
               />
-              <div>
-                <Label className="md:text-lg">Product</Label>
+              <div className="ml-2">
+                <Label className=" md:text-lg md:font-bold">Product</Label>
                 <p className="text-sm">{product.productName}</p>
               </div>
             </div>
-            <div>
-              <Label className="md:text-lg"> Estimated Delivery Date </Label>
-              <p className="text-sm">{dayjs().format("MMMM,DD/YYYY")}</p>
+            <div className=" flex justify-end md:block md:justify-normal">
+              <div>
+                <Label className="md:text-lg  md:font-bold">
+                  {" "}
+                  Estimated Delivery{" "}
+                </Label>
+                <p className="text-sm">{dayjs().format("MMMM,DD/YYYY")}</p>
+              </div>
             </div>
             <div className="flex gap-2 items-center">
               <PackageOpen className="h-9 w-9 text-amber-500" />
               <div className="">
-                <Label className="text-lg ">Order Status</Label>
-                <p className="text-amber-500">Order Is Being Prepared</p>
+                <Label className="md:text-lg  md:font-bold">Order Status</Label>
+                <p className="text-amber-500 text-sm">Prepared</p>
               </div>
             </div>
-            <div>
-              <Label className="text-lg">Price</Label>
-              <p className="text-sm">
-                {product.quantity} Item{parseInt(product.quantity) > 1 && "s"} x{" "}
-                {product.productPrice} = ${" "}
-                {(
-                  parseInt(product.productPrice) * parseInt(product.quantity)
-                ).toFixed(2)}
-              </p>
+            <div className="  flex justify-end md:block md:justify-normal" >
+              <div>
+                <Label className="md:text-lg md:font-bold">Price</Label>
+                <p className="text-sm">
+                  {product.quantity} x{" $ "}
+                  {product.productPrice} = ${" "}
+                  {(
+                    parseInt(product.productPrice) * parseInt(product.quantity)
+                  ).toFixed(2)}
+                </p>
+              </div>
             </div>
           </div>
         ))}
