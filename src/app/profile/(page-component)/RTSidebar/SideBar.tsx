@@ -2,18 +2,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import {
-  Home,
-  LineChart,
-  MapPinCheck,
-  ShoppingCart,
-  Users,
-} from "lucide-react";
+import { MapPinCheck, ShoppingCart, Users } from "lucide-react";
 
 const profileRoutes = [
   {
-    icon: <Home className="h-4 w-4" />,
-    name: "Dashboard",
+    icon: <Users className="h-4 w-4" />,
+    name: "Profile",
     href: "/profile/info",
   },
   {
@@ -25,16 +19,6 @@ const profileRoutes = [
     icon: <MapPinCheck className="h-4 w-4" />,
     name: "My Address",
     href: "/profile/my-address",
-  },
-  {
-    icon: <Users className="h-4 w-4" />,
-    name: "Customers",
-    href: "/profile/customers",
-  },
-  {
-    icon: <LineChart className="h-4 w-4" />,
-    name: "Analytics",
-    href: "/profile/analytics",
   },
 ];
 

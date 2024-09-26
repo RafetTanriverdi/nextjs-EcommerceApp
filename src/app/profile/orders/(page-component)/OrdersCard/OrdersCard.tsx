@@ -37,6 +37,8 @@ interface OrderDetails {
       name: string;
     };
   };
+  currentStatus: string;
+
 }
 const OrdersCard = ({ props }: { props: OrderDetails }) => {
   const router = useRouter();
@@ -99,7 +101,7 @@ const OrdersCard = ({ props }: { props: OrderDetails }) => {
               <PackageOpen className="h-9 w-9 text-amber-500" />
               <div className="">
                 <Label className="md:text-lg  md:font-bold">Order Status</Label>
-                <p className="text-amber-500 text-sm">Prepared</p>
+                <p className="text-amber-500 text-sm">{props?.currentStatus}</p>
               </div>
             </div>
             <div className="  flex justify-end md:block md:justify-normal" >

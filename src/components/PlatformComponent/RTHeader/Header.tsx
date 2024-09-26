@@ -40,8 +40,7 @@ const routes = [
   { name: "Home", href: "/products" },
   { name: "Orders", href: "/profile/orders" },
   { name: "Categories", href: "/categories" },
-  { name: "Settings", href: "/profile/settings" },
-];
+  ];
 
 export const Header = () => {
   const pathname = usePathname();
@@ -80,7 +79,7 @@ export const Header = () => {
       <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <Link
-            href="#"
+            href="/products"
             className="flex items-center gap-2 text-lg font-semibold md:text-base"
           >
             <Package2 className="h-6 w-6" />
@@ -115,11 +114,11 @@ export const Header = () => {
           <SheetContent side="left">
             <nav className="grid gap-6 text-lg font-medium">
               <Link
-                href="#"
+                href="/products"  
                 className="flex items-center gap-2 text-lg font-semibold"
               >
                 <Package2 className="h-6 w-6" />
-                <span className="sr-only">Acme Inc</span>
+                <span className="sr-only">Rafet Tanrıverdi</span>
               </Link>
               {routes.map((route) => (
                 <Link
@@ -196,11 +195,8 @@ export const Header = () => {
               <DropdownMenuItem onClick={() => router.push("/profile")}>
                 My Account
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.push("/settings")}>
-                Settings
-              </DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
+            
+
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>

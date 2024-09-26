@@ -5,7 +5,6 @@ import {
   CardHeader,
 } from "../../../../../components/ui/card";
 import { Skeleton } from "../../../../../components/ui/skeleton";
-import { PackageOpen } from "lucide-react";
 
 const ContentLoader = () => {
   return (
@@ -62,10 +61,9 @@ const PageLoader = () => {
         </div>
       </CardHeader>
       <CardContent className="md:m-4 md:p-3 p-1">
-        <ContentLoader />
-        <ContentLoader />
-        <ContentLoader />
-        <ContentLoader />
+        {[1, 2, 3, 4].map((item) => (
+          <ContentLoader key={item  } />
+        ))}
       </CardContent>
     </Card>
   );
