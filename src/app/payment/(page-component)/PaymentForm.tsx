@@ -49,7 +49,7 @@ const PaymentForm: React.FC = () => {
   const { control, handleSubmit } = useForm<FormValues>();
   const [promoCode, setPromoCode] = useState<string>("");
   const [isClient, setIsClient] = useState(false);
-
+console.log(stripePromise)
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -62,7 +62,7 @@ const PaymentForm: React.FC = () => {
       quantity: item.quantity, 
     })),
     amount: price,
-    customer: "cus_QliXY4FzUdwBZ1",
+    customer: "cus_Qvy0xzKjCim8gb",
     customerEmail: "rafet26436@gmail.com",
     shippingAddress:{
       name: "Rafet",
@@ -133,6 +133,24 @@ const PaymentForm: React.FC = () => {
       invalid: {
         iconColor: "#E25950",
         color: "#ffffff",
+      },
+    },
+  };
+  const cardLightOptions = {
+    style: {
+      base: {
+        iconColor: "#000000",
+        color: "#000000",
+        fontWeight: 400,
+        fontFamily: "Arial, sans-serif",
+        fontSize: "16px",
+        "::placeholder": {
+          color: "#000000",
+        },
+      },
+      invalid: {
+        iconColor: "#E25950",
+        color: "#000000",
       },
     },
   };
@@ -237,7 +255,7 @@ const PaymentForm: React.FC = () => {
                   <Label htmlFor="card-element">Card Details</Label>
                   <CardElement
                     id="card-element"
-                    options={cardElementOptions}
+                    options={theme === "dark" ? cardElementOptions : cardLightOptions}
                     className="input-card-element border rounded p-2"
                   />
                 </div>
