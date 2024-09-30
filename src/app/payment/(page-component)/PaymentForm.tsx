@@ -10,7 +10,7 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@rt/app/store";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "@rt/network/httpRequester";
 import { useTheme } from "next-themes";
 import {
@@ -49,22 +49,33 @@ const PaymentForm: React.FC = () => {
   const { control, handleSubmit } = useForm<FormValues>();
   const [promoCode, setPromoCode] = useState<string>("");
   const [isClient, setIsClient] = useState(false);
-console.log(stripePromise)
+  console.log(stripePromise);
   useEffect(() => {
     setIsClient(true);
   }, []);
 
+  interface UserProfile {
+    data: {
+      customerStripeId: string;
+      email: string;
+    };
+  }
+
+  const { data: UserData } = useQuery<UserProfile>({
+    queryKey: ["profile"],
+  });
+  console.log(UserData?.data, "UserData");
   const price =
     cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0) * 100;
   const postbody = {
     orderedItems: cartItems.map((item) => ({
       productId: item.productId,
-      quantity: item.quantity, 
+      quantity: item.quantity,
     })),
     amount: price,
-    customer: "cus_Qvy0xzKjCim8gb",
-    customerEmail: "rafet26436@gmail.com",
-    shippingAddress:{
+    customer: UserData?.data?.customerStripeId,
+    customerEmail: UserData?.data?.email,
+    shippingAddress: {
       name: "Rafet",
       phone: "+123456789",
       city: "Dhaka",
@@ -73,7 +84,7 @@ console.log(stripePromise)
       line2: "Road 1",
       postal_code: "1205",
       state: "Dhaka",
-    }
+    },
   };
 
   const handleQuantityChange = (productId: string, quantity: number) => {
@@ -92,7 +103,10 @@ console.log(stripePromise)
       if (!cardElement) {
         return;
       }
-      const clientData = await axiosInstance.post(ENDPOINT.CHECKOUT.GETCLIENTSECRET, postbody);
+      const clientData = await axiosInstance.post(
+        ENDPOINT.CHECKOUT.GETCLIENTSECRET,
+        postbody
+      );
       console.log(clientData);
 
       await stripe.confirmCardPayment(clientData?.data.clientSecret, {
@@ -255,7 +269,9 @@ console.log(stripePromise)
                   <Label htmlFor="card-element">Card Details</Label>
                   <CardElement
                     id="card-element"
-                    options={theme === "dark" ? cardElementOptions : cardLightOptions}
+                    options={
+                      theme === "dark" ? cardElementOptions : cardLightOptions
+                    }
                     className="input-card-element border rounded p-2"
                   />
                 </div>
