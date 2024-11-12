@@ -78,6 +78,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {!product?.stock && (
           <p className="text-red-500 text-center  "> Out of Stock </p>
         )}
+        
         <Button
           variant="default"
           className="w-full mt-1"
