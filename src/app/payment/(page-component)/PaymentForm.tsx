@@ -107,22 +107,26 @@ const PaymentForm: React.FC = () => {
         ENDPOINT.CHECKOUT.GETCLIENTSECRET,
         postbody
       );
-      console.log(clientData);
+      console.log(clientData, "clientData");
 
-      await stripe.confirmCardPayment(clientData?.data.clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            name: formData.name,
-            email: formData.email,
-            address: {
-              city: formData.city,
-              line1: formData.address,
-              postal_code: formData.postalCode,
+      if (clientData?.data?.clientSecret) {
+        await stripe.confirmCardPayment(clientData?.data.clientSecret, {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: formData.name,
+              email: formData.email,
+              address: {
+                city: formData.city,
+                line1: formData.address,
+                postal_code: formData.postalCode,
+              },
             },
           },
-        },
-      });
+        });
+      } else {
+        console.error("Client secret is missing.");
+      }
     },
     onSuccess: () => {
       dispatch(clearCart());
