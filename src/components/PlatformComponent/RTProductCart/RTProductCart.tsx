@@ -85,7 +85,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           disabled={!product?.stock}
         >
           Details
-        </Button>
+        </Button> 
       </CardFooter>
     </Card>
   );
